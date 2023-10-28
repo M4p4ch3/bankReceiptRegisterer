@@ -18,6 +18,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        setProperty("archivesBaseName", "BankReceiptRegisterer")
     }
 
     buildTypes {
