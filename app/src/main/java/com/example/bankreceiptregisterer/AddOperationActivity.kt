@@ -1,5 +1,6 @@
 package com.example.bankreceiptregisterer
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.os.Environment
@@ -9,9 +10,10 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.ComponentActivity
-import java.util.*
 import java.io.*
 import java.text.SimpleDateFormat
+import java.util.*
+
 
 class AddOperationActivity : ComponentActivity() {
 
@@ -51,7 +53,18 @@ class AddOperationActivity : ComponentActivity() {
     }
 
     fun cancel(view: View) {
-        this@AddOperationActivity.finish()
+        val builder = AlertDialog.Builder(this)
+        builder.setPositiveButton("Yes") { dialog, which ->
+            this@AddOperationActivity.finish()
+        }
+        builder.setNegativeButton("No") { dialog, which ->
+            // NOOP
+        }
+
+        builder.setTitle("Confirm cancel operation ?")
+
+        val d = builder.create()
+        d.show()
     }
 
     fun addOperation(view: View) {
@@ -72,18 +85,30 @@ class AddOperationActivity : ComponentActivity() {
         val csvEntry: String = "$dateStr,$mode,$tier,$cat,$desc,$amount\n"
         findViewById<TextView>(R.id.textViewCsvEntry).text = csvEntry
 
-        val pathDoc = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-        val fileReceiptList: File = File(pathDoc, "receiptList.txt")
-        try {
-            val writer = FileOutputStream(fileReceiptList, true)
-            writer.write(csvEntry.toByteArray())
-            writer.close()
-            findViewById<TextView>(R.id.textViewWriteStatus).text = "OK"
-        } catch (e: IOException) {
-            e.printStackTrace()
-            findViewById<TextView>(R.id.textViewWriteStatus).text = "FAILED"
+        val builder = AlertDialog.Builder(this)
+        builder.setPositiveButton("Yes") { dialog, which ->
+            val pathDoc = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+            val fileReceiptList: File = File(pathDoc, "receiptList.txt")
+            try {
+                val writer = FileOutputStream(fileReceiptList, true)
+                writer.write(csvEntry.toByteArray())
+                writer.close()
+                findViewById<TextView>(R.id.textViewWriteStatus).text = "OK"
+            } catch (e: IOException) {
+                e.printStackTrace()
+                findViewById<TextView>(R.id.textViewWriteStatus).text = "FAILED"
+            }
+
+            this@AddOperationActivity.finish()
+        }
+        builder.setNegativeButton("No") { dialog, which ->
+            // NOOP
         }
 
-        this@AddOperationActivity.finish()
+        builder.setTitle("Confirm add operation ?")
+        builder.setMessage("Entry : $csvEntry")
+
+        val d = builder.create()
+        d.show()
     }
 }
