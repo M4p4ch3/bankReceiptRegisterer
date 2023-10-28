@@ -17,8 +17,6 @@
     <string name="amount">Amount</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
-    <string name="csvEntry">CSV entry</string>
-    <string name="writeStatus">Write status</string>
     <string-array name="arrayMode">
         <item>cb</item>
         <item>cb web</item>

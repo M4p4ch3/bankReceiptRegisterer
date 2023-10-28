@@ -10,9 +10,11 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.ComponentActivity
-import java.io.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
 
 class AddOperationActivity : ComponentActivity() {
@@ -83,30 +85,35 @@ class AddOperationActivity : ComponentActivity() {
         // date,mode,tier,cat,desc,amount
         // 2023-09-19,cb,osteo,health,total reset consult 4,-60.0
         val csvEntry: String = "$dateStr,$mode,$tier,$cat,$desc,$amount\n"
-        findViewById<TextView>(R.id.textViewCsvEntry).text = csvEntry
 
         val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirm add operation ?")
+        builder.setMessage("Operation : $csvEntry")
         builder.setPositiveButton("Yes") { dialog, which ->
+            val builder2 = AlertDialog.Builder(this)
+            builder.setMessage("Operation : $csvEntry")
+            builder2.setPositiveButton("OK") { dialog, which ->
+                this@AddOperationActivity.finish()
+            }
+
             val pathDoc = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
             val fileReceiptList: File = File(pathDoc, "receiptList.txt")
             try {
                 val writer = FileOutputStream(fileReceiptList, true)
                 writer.write(csvEntry.toByteArray())
                 writer.close()
-                findViewById<TextView>(R.id.textViewWriteStatus).text = "OK"
+                builder2.setTitle("Add operation OK")
             } catch (e: IOException) {
                 e.printStackTrace()
-                findViewById<TextView>(R.id.textViewWriteStatus).text = "FAILED"
+                builder2.setTitle("Add operation FAILED")
             }
 
-            this@AddOperationActivity.finish()
+            val d2 = builder2.create()
+            d2.show()
         }
         builder.setNegativeButton("No") { dialog, which ->
             // NOOP
         }
-
-        builder.setTitle("Confirm add operation ?")
-        builder.setMessage("Entry : $csvEntry")
 
         val d = builder.create()
         d.show()
