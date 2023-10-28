@@ -22,10 +22,15 @@ class MainActivity : ComponentActivity() {
         updateOperationList()
     }
 
-    override fun onTopResumedActivityChanged(isTopResumedActivity: Boolean) {
-        super.onTopResumedActivityChanged(isTopResumedActivity)
+    override fun onResume() {
+        super.onResume()
         updateOperationList()
     }
+
+//    override fun onTopResumedActivityChanged(isTopResumedActivity: Boolean) {
+//        super.onTopResumedActivityChanged(isTopResumedActivity)
+//        updateOperationList()
+//    }
 
     private fun updateOperationList() {
         val pathDoc = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
